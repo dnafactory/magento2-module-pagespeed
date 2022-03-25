@@ -1,0 +1,56 @@
+<?php
+
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+
+$scriptString = '
+(function(w,d){
+    var l = false,
+    lS = function(a,b){ a.readyState?a.onreadystatechange=function(){(a.readyState==\'loaded\'||a.readyState==\'complete\')&&(a.onreadystatechange=null,b());}:a.onload=function(){b();};},
+    bR = w.require,
+    rQS = \'requirejs-src\',
+    rdQS = \'requirejs-dep-src\',
+    rJs = d.querySelector(`[${rQS}]`),
+    rJd = d.querySelectorAll(`[${rdQS}]`),
+    cS = (s,a) => { s.src=s.getAttribute(a);s.removeAttribute(a); },
+    tE = [\'focus\',\'mouseover\',\'touchstart\'],
+    rP = new Promise(r => {
+        var rF = function() { w.require = w.requirejs; r(); };
+        w.hasOwnProperty(\'requirejs\') && rF();
+        var rLS = function(arr, cl){
+            if(arr.length > 0){
+                var s = arr.shift();
+                new Promise(ld => { lS(s,ld); }).then(() => {
+                    rLS(arr,cl);
+                });
+                cS(s,rdQS);
+            }else{
+                cl();
+            }
+        },
+        eC = function(){
+            if(!l){
+                l = true;
+                tE.forEach(e => { w.removeEventListener(e, eC, false); });
+                d.removeEventListener(\'keydown\', eC, false);
+                lS(rJs, () => {
+                    w.require = w.requirejs;
+                    rLS(Array.prototype.slice.call(rJd),rF);
+                });
+                w.requirejs = bR;
+                cS(rJs,rQS);
+            }
+        };
+        tE.forEach(e => { w.addEventListener(e, eC, false); });
+        d.addEventListener(\'keydown\', eC, false);
+        d.hasFocus() && eC();
+    }),
+    require = function(...args) {
+        return rP.then(() => {
+            return w.require.apply(null, args);
+        });
+    };
+    w.require = require.config = require;
+    })(window, document);
+    ';
+
+echo /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false);

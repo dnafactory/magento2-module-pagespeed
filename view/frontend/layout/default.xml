@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="head.additional">
+         <container name="require.js.deferral" before="-">
+             <block class="Magento\Framework\View\Element\Text" name="require.js.deferral.placeholder">
+                 <action method="setText">
+                     <argument name="text" xsi:type="string"><![CDATA[<!-- __require.js.deferral__ -->]]></argument>
+                 </action>
+             </block>
+             <block name="require.js.deferral.script" class="Magento\Framework\View\Element\Template" ifconfig="dnafactory_pso/js/defer_requirejs" template="DNAFactory_PageSpeed::js/require_js.phtml"
+/>
+             </container>
+        </referenceBlock>
+    </body>
+</page>

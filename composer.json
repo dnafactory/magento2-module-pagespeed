@@ -1,0 +1,34 @@
+{
+    "name": "dnafactory/module-pagespeed",
+    "description": "PageSpeed optimizations for Magento 2",
+    "type": "magento2-module",
+    "keywords": ["Magento2", "PageSpeed"],
+    "license": [
+        "BSD-3-Clause"
+    ],
+    "require": {
+        "magento/framework": "*",
+        "dnafactory/core": "*"
+    },
+    "authors": [
+        {
+            "name": "DNAFactory",
+            "email": "info@dnafactory.it",
+            "homepage": "https://www.dnafactory.it",
+            "role": "Owner"
+        },
+        {
+            "name": "Ciro Arcadio",
+            "email": "ciro.arcadio@dnafactory.it",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "DNAFactory\\PageSpeed\\": ""
+        }
+    }
+}
