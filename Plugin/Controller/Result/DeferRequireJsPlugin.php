@@ -50,7 +50,8 @@ class DeferRequireJsPlugin
             ];
             foreach ($configFiles as $configFile){
                 $pattern = $this->getSearchPattern($configFile);
-                $content = preg_replace($pattern, '$1 async requirejs-dep-src=$2', $content);
+                $content = preg_replace($pattern, '$1 defer requirejs-dep-src=$2', $content);
+                $content = preg_replace('/require\(\[/', '__dcr([', $content);
             }
 
             $subject->setContent($content);

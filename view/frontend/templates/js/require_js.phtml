@@ -4,49 +4,37 @@
 
 $scriptString = '
 (function(w,d){
-    var l = false,
-    lS = function(a,b){ a.readyState?a.onreadystatechange=function(){(a.readyState==\'loaded\'||a.readyState==\'complete\')&&(a.onreadystatechange=null,b());}:a.onload=function(){b();};},
+    var lS = function(a,b){ a.readyState?a.onreadystatechange=function(){(a.readyState==\'loaded\'||a.readyState==\'complete\')&&(a.onreadystatechange=null,b());}:a.onload=function(){b();};},
     bR = w.require,
     rQS = \'requirejs-src\',
     rdQS = \'requirejs-dep-src\',
     rJs = d.querySelector(`[${rQS}]`),
     rJd = d.querySelectorAll(`[${rdQS}]`),
     cS = (s,a) => { s.src=s.getAttribute(a);s.removeAttribute(a); },
-    tE = [\'focus\',\'mouseover\',\'touchstart\'],
+    tE = [\'keydown\',\'mouseover\',\'touchstart\'],
     rP = new Promise(r => {
-        var rF = function() { w.require = w.requirejs; r(); };
+        var rF = function() { w.__dcr = w.require = w.requirejs; r(); };
         w.hasOwnProperty(\'requirejs\') && rF();
-        var rLS = function(arr, cl){
-            if(arr.length > 0){
-                var s = arr.shift();
-                new Promise(ld => { lS(s,ld); }).then(() => {
-                    rLS(arr,cl);
+        var eC = function(){
+            tE.forEach(e => { d.removeEventListener(e, eC, false); });
+            var u = lS(rJs, () => {
+                w.require = w.requirejs;
+                p = [];
+                rJd.forEach(s => {
+                    p.push(new Promise(ld => { lS(s,ld); }));
                 });
-                cS(s,rdQS);
-            }else{
-                cl();
-            }
-        },
-        eC = function(){
-            if(!l){
-                l = true;
-                tE.forEach(e => { w.removeEventListener(e, eC, false); });
-                d.removeEventListener(\'keydown\', eC, false);
-                lS(rJs, () => {
-                    w.require = w.requirejs;
-                    rLS(Array.prototype.slice.call(rJd),rF);
-                });
-                w.requirejs = bR;
-                cS(rJs,rQS);
-            }
+                Promise.all(p).then(rF);
+                rJd.forEach(f => { cS(f,rdQS); });
+            });
+            w.requirejs = bR;
+            cS(rJs,rQS);
         };
-        tE.forEach(e => { w.addEventListener(e, eC, false); });
-        d.addEventListener(\'keydown\', eC, false);
-        d.hasFocus() && eC();
-    }),
-    require = function(...args) {
+        tE.forEach(e => { d.addEventListener(e, eC, false); });
+        setTimeout(eC,5000);
+    });
+    w.__dcr = require = function(a,b,c,d) {
         return rP.then(() => {
-            return w.require.apply(null, args);
+            w.require(Array.isArray(a)? a:[a],b,c,d);
         });
     };
     w.require = require.config = require;
